@@ -2,6 +2,9 @@ import React, { useState } from 'react'
 import { IconButton, InputBase } from '@mui/material'
 import { styled, alpha } from '@mui/material/styles';
 import SearchIcon from '@mui/icons-material/Search';
+import { Dispatch } from '../../util';
+import { fetchCollection } from '../../sagas/fetchCollectionSaga';
+import { connect } from 'react-redux';
 
 const StyledBackground = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -52,3 +55,11 @@ export const UserInput: React.FC<Props> = (props: Props) => {
         </StyledBackground>
     )
 }
+
+const mapDispatchToProps = (dispatch: Dispatch): Props =>  ({
+  onSearch(user) {
+    dispatch(fetchCollection({user}))
+  },
+})
+
+export default connect(null, mapDispatchToProps)(UserInput)

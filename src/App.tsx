@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import CollectionView from './features/CollectionView';
 import TitleBar from './features/TitleBar';
 
 function App() {
@@ -7,15 +8,10 @@ function App() {
     <div style={{
       display: 'flex',
       flexDirection: "column",
+      rowGap: "10px"
     }}>
       <TitleBar/>
-      <div
-      style={{
-        backgroundColor: 'red',
-        flex: "1 0 0",
-        height: "100%"
-      }}
-      />
+      <CollectionView/>
 
     </div>
   );
