@@ -1,10 +1,11 @@
-import React, { useState } from 'react'
+import React  from 'react'
 import { IconButton, InputBase } from '@mui/material'
 import { styled, alpha } from '@mui/material/styles';
-import SearchIcon from '@mui/icons-material/Search';
+import PersonIcon from '@mui/icons-material/Person';
 import { Dispatch } from '../../util';
-import { fetchCollection } from '../../sagas/fetchCollectionSaga';
+import {setUser, selectUser} from "./slice"
 import { connect } from 'react-redux';
+import { RootState } from '../../store';
 
 const StyledBackground = styled('div')(({ theme }) => ({
     position: 'relative',
@@ -34,32 +35,39 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     },
 }));
 
-interface Props {
-    onSearch: (user: string) => void
+interface StateProps {
+  user: string;
 }
 
+interface DispatchProps {
+    onChange: (user: string) => void;
+}
+
+type Props = StateProps & DispatchProps
+
 export const UserInput: React.FC<Props> = (props: Props) => {
-    const [user, setUser] = useState("");
     return (
         <StyledBackground>
-            <IconButton
-              onClick={()=>props.onSearch(user)}
-            >
-              <SearchIcon style={{color: 'white'}}/>
+            <IconButton href={`/?user=${props.user}`}>
+              <PersonIcon style={{color: 'white'}}/>
               </IconButton>
             <StyledInputBase
                 placeholder="User"
-                value={user}
-                onChange={((e)=>setUser(e.target.value))}
+                value={props.user}
+                onChange={((e)=>props.onChange(e.target.value))}
             />
         </StyledBackground>
     )
 }
 
-const mapDispatchToProps = (dispatch: Dispatch): Props =>  ({
-  onSearch(user) {
-    dispatch(fetchCollection({user}))
-  },
+const mapStateToProps = (state: RootState): StateProps => ({
+  user: selectUser(state)
 })
 
-export default connect(null, mapDispatchToProps)(UserInput)
+const mapDispatchToProps = (dispatch: Dispatch): DispatchProps =>  ({
+  onChange(user) {
+    dispatch(setUser(user))
+  }
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserInput)

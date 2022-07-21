@@ -13,7 +13,6 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
         ? props.minPlayers
         : props.minPlayers+" - "+props.maxPlayers
     )
-    console.log(`${props.name}: ${JSON.stringify(props.recommended)}`)
     return (
         <Paper style={{
             width: "calc(100%/3 - 2*5px)"

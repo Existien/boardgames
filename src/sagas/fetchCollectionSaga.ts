@@ -1,7 +1,7 @@
 import { Action, createAction } from '@reduxjs/toolkit';
 import {call, put, takeEvery} from 'redux-saga/effects';
 import { getBoardgameUrl, getCollectionUrl } from '../api';
-import { Collection, Game, setCollection } from '../features/CollectionView/slice';
+import { Collection, Game, setCollection, setIsReady } from '../features/CollectionView/slice';
 import { limit } from '../plots';
 
 export const fetchCollection = createAction<{user: string}>('fetchCollection');
@@ -13,6 +13,7 @@ function* fetchCollectionHandler(action: Action) {
 
     collection = yield call(addPolls, collection, limit);
     yield put(setCollection(collection))
+    yield put(setIsReady())
 }
 
 export function* fetchCollectionSaga() {
