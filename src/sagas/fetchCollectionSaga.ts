@@ -2,16 +2,16 @@ import { Action, createAction } from '@reduxjs/toolkit';
 import {call, put, takeEvery} from 'redux-saga/effects';
 import { getBoardgameUrl, getCollectionUrl } from '../api';
 import { Collection, Game, setCollection } from '../features/CollectionView/slice';
+import { limit } from '../plots';
 
 export const fetchCollection = createAction<{user: string}>('fetchCollection');
-const entryLimit = 4;
 
 function* fetchCollectionHandler(action: Action) {
     if (!fetchCollection.match(action)) return;
 
     let collection: Collection = yield call(getCollection, action.payload.user)
 
-    collection = yield call(addPolls, collection, entryLimit);
+    collection = yield call(addPolls, collection, limit);
     yield put(setCollection(collection))
 }
 
@@ -46,16 +46,28 @@ function* addPolls (collection: Collection, entryLimit: number) {
             continue;
         }
 
-        const parsedPoll = prunePoll(parsePoll(poll), entryLimit)
+        const parsedPoll = parsePoll(poll)
         const enrichedGame: Game = {
             ...game,
             bestWith: Object.entries(parsedPoll['Best']).sort((a,b)=>Number(b[1])-Number(a[1]))[0][0],
-            recommended: parsedPoll['Recommended'],
-            notRecommended: parsedPoll['Not Recommended'],
+            recommended: prunePoll(sumPolls(parsedPoll['Recommended'], parsedPoll['Best']), entryLimit),
+            notRecommended: prunePoll(parsedPoll['Not Recommended'], entryLimit),
         }
         enrichedCollection.push(enrichedGame)
     }
     return enrichedCollection
+}
+
+const sumPolls = (pollA: {[key: string]: Number}, pollB: {[key: string]: Number}): {[key: string]: Number} => {
+    const summed: {[key: string]: Number} = {}
+    for (const [key, numA] of Object.entries(pollA)) {
+        if (pollB[key] === undefined) {
+            summed[key] = numA
+        } else {
+            summed[key] = Number(numA.valueOf() + pollB[key].valueOf())
+        }
+    }
+    return summed
 }
 
 interface ParsedPoll {
@@ -85,13 +97,9 @@ const parsePoll = (elements: HTMLCollectionOf<Element>): ParsedPoll => {
     return parsed
 }
 
-const prunePoll = (poll: ParsedPoll, limit: number): ParsedPoll => {
-    const prunedPoll: ParsedPoll = {}
-    for (const [category, data] of Object.entries(poll)) {
-        const prunedEntries = Object.entries(data).sort((a, b)=>(Number(b[1])-Number(a[1]))).slice(0, limit)
-        prunedPoll[category] = Object.fromEntries(prunedEntries)
-    }
-    return prunedPoll;
+const prunePoll = (poll: {[key: string]: Number}, limit: number): {[key: string]: Number} => {
+    const prunedEntries = Object.entries(poll).sort((a, b)=>(Number(b[1])-Number(a[1]))).slice(0, limit)
+    return Object.fromEntries(prunedEntries.filter(([key, votes]) => votes>0))
 }
 
 const getPoll = (element: Element, pollName: string): HTMLCollectionOf<Element>|undefined => {
