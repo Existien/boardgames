@@ -1,4 +1,6 @@
-# Getting Started with Create React App
+# Boardgames
+
+An alternative view for your boardgame collection from [BGG](www.boardgamegeek.com) via its [XML API](https://boardgamegeek.com/wiki/page/BGG_XML_API2).
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
