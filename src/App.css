@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: center;
   column-gap: var(--collection-column-gap);
   row-gap: calc(var(--collection-column-gap) * 4);
 }
@@ -20,19 +20,28 @@
   height: 100px;
 }
 
-.Game {
-  width: calc(100% / 3 - 2 * var(--collection-column-gap));
-}
-
 .Game .grid-container {
   display: grid;
   grid-template-areas:
-    "name name name"
-    "image players rank"
-    "image best rating"
-    "image recommended notRecommended";
-  grid-template-columns: 1fr 1fr 1fr;
+    "name name name name name name"
+    "image image players players rank rank"
+    "image image best best rating rating"
+    "recommended recommended recommended notRecommended notRecommended notRecommended";
+  grid-template-columns: repeat(6, 1fr);
   gap: var(--collection-column-gap);
+}
+
+@media only screen and (min-width: 640px) {
+  .Game .grid-container {
+    display: grid;
+    grid-template-areas:
+      "name name name"
+      "image players rank"
+      "image best rating"
+      "image recommended notRecommended";
+    grid-template-columns: 2fr 3fr 3fr;
+    gap: var(--collection-column-gap);
+  }
 }
 
 :root {
