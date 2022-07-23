@@ -11,14 +11,14 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
       ? props.minPlayers
       : props.minPlayers + " - " + props.maxPlayers);
 
-  const colorMap = assignColors(Object.keys(props.recommended || {}), moreland);
+  const colorMap = assignColors(Object.keys(props.recommended || {}), spectral);
 
   return (
     <Paper className="Game">
       <div className="grid-container">
         <div style={{ gridArea: "name" }}>
           <Typography variant="h5" textAlign="center">
-            {props.name}
+            <a href={`https://boardgamegeek.com/boardgame/${props.objectId}`}>{props.name}</a>
           </Typography>
         </div>
         <div style={{ gridArea: "image" }}>
