@@ -1,7 +1,7 @@
 import { Paper, Typography } from "@mui/material";
 import React from "react";
 import { Game as Props } from "./slice";
-import { assignColors, moreland } from "../../plots";
+import { assignColors, spectral } from "../../plots";
 import { PieChart } from "./PieChart";
 
 export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {

@@ -11,6 +11,22 @@ export const moreland = [
   "#b40426",
 ];
 
+export const spectral = [
+  '#5e4fa2',
+  '#3288bd',
+  '#66c2a5',
+  '#abdda4',
+  '#e6f598',
+  '#fee08b',
+  '#fdae61',
+  '#f46d43',
+  '#d53e4f',
+  '#9e0142',
+  '#a41870',
+  '#7a0e6c',
+
+]
+
 export const assignColors = (
   keys: Array<string>,
   colors: Array<string>
