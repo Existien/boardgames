@@ -22,7 +22,7 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
           </Typography>
         </div>
         <div style={{ gridArea: "image" }}>
-          <img alt="" src={props.image} style={{ objectFit: "contain" }} />
+          <img alt="" src={props.image} />
         </div>
         <div style={{ gridArea: "players" }}>
           <Typography>{players}</Typography>
