@@ -75,11 +75,8 @@ function* addPolls(collection: Collection, entryLimit: number) {
       bestWith: Object.entries(parsedPoll["Best"]).sort(
         (a, b) => Number(b[1]) - Number(a[1])
       )[0][0],
-      recommended: prunePoll(
-        sumPolls(parsedPoll["Recommended"], parsedPoll["Best"]),
-        entryLimit
-      ),
-      notRecommended: prunePoll(parsedPoll["Not Recommended"], entryLimit),
+      recommended: sumPolls(parsedPoll["Recommended"], parsedPoll["Best"]),
+      notRecommended: parsedPoll["Not Recommended"],
     };
     enrichedCollection.push(enrichedGame);
   }
@@ -126,16 +123,6 @@ const parsePoll = (elements: HTMLCollectionOf<Element>): ParsedPoll => {
     }
   }
   return parsed;
-};
-
-const prunePoll = (
-  poll: { [key: string]: Number },
-  limit: number
-): { [key: string]: Number } => {
-  const prunedEntries = Object.entries(poll)
-    .sort((a, b) => Number(b[1]) - Number(a[1]))
-    .slice(0, limit);
-  return Object.fromEntries(prunedEntries.filter(([key, votes]) => votes > 0));
 };
 
 const getPoll = (

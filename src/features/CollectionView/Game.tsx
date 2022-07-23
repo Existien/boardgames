@@ -1,11 +1,8 @@
 import { Paper, Typography } from "@mui/material";
 import React from "react";
 import { Game as Props } from "./slice";
-import { Chart as ChartJS, ArcElement, Tooltip, Legend, Title } from "chart.js";
-import { Chart, Pie } from "react-chartjs-2";
-import { notRecommendedColors, recommendedColors } from "../../plots";
-
-ChartJS.register(ArcElement, Tooltip, Legend, Title);
+import { assignColors, moreland } from "../../plots";
+import { PieChart } from "./PieChart";
 
 export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
   const players =
@@ -13,6 +10,9 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
     (props.minPlayers === props.maxPlayers
       ? props.minPlayers
       : props.minPlayers + " - " + props.maxPlayers);
+
+  const colorMap = assignColors(Object.keys(props.recommended || {}), moreland);
+
   return (
     <Paper className="Game">
       <div className="grid-container">
@@ -32,30 +32,12 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
         </div>
         <div style={{ gridArea: "recommended" }}>
           {props.recommended && (
-            <Chart
-              type="pie"
-              width="100%"
-              height="100%"
-              options={{
-                maintainAspectRatio: true,
-                plugins: {
-                  title: {
-                    text: "Recommended",
-                    display: true,
-                  },
-                },
-              }}
+            <PieChart
+              data={props.recommended}
               title="Recommended"
-              data={{
-                labels: Object.keys(props.recommended),
-                datasets: [
-                  {
-                    label: "# of Votes",
-                    data: Object.values(props.recommended),
-                    backgroundColor: recommendedColors,
-                  },
-                ],
-              }}
+              legendPosition="left"
+              colorMap={colorMap}
+              dataLimit={5}
             />
           )}
         </div>
@@ -67,30 +49,17 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
         </div>
         <div style={{ gridArea: "notRecommended" }}>
           {props.notRecommended && (
-            <Pie
-              width="100%"
-              height="100%"
-              options={{
-                maintainAspectRatio: true,
-                plugins: {
-                  title: {
-                    text: "Not Recommended",
-                    display: true,
-                  },
-                },
-              }}
-              title="Not Recommended"
-              data={{
-                labels: Object.keys(props.notRecommended),
-                datasets: [
-                  {
-                    label: "# of Votes",
-                    data: Object.values(props.notRecommended),
-                    backgroundColor: notRecommendedColors,
-                  },
-                ],
-              }}
-            />
+            <div style={{ gridArea: "notRecommended" }}>
+              {props.notRecommended && (
+                <PieChart
+                  data={props.notRecommended}
+                  title="Not Recommended"
+                  legendPosition="right"
+                  colorMap={colorMap}
+                  dataLimit={5}
+                />
+              )}
+            </div>
           )}
         </div>
       </div>

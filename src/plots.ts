@@ -1,17 +1,25 @@
 export const limit = 5;
 
-export const recommendedColors = [
-  "#2b4676",
-  "#3362a1",
-  "#4280ca",
-  "#5c9eed",
-  "#87beff",
+export const moreland = [
+  "#3b4cc0",
+  "#688aef",
+  "#99baff",
+  "#c9d8ef",
+  "#edd1c2",
+  "#f7a789",
+  "#e36a53",
+  "#b40426",
 ];
 
-export const notRecommendedColors = [
-  "#c40013",
-  "#d84424",
-  "#e96b49",
-  "#f68e76",
-  "#ffb1aa",
-];
+export const assignColors = (
+  keys: Array<string>,
+  colors: Array<string>
+): { [key: string]: string } => {
+  let assignedColors: { [key: string]: string } = {};
+  let idx = 0;
+  for (const key of keys) {
+    assignedColors[key] = colors[idx];
+    ++idx;
+  }
+  return assignedColors;
+};
