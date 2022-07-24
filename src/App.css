@@ -13,7 +13,7 @@
   row-gap: calc(var(--collection-column-gap) * 4);
 }
 
-.PlayerSelection {
+.FormInput {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;

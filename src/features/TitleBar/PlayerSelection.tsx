@@ -51,7 +51,7 @@ type Props = StateProps & DispatchProps;
 export const PlayerSelection: React.FC<Props> = (props: Props) => {
   return (
     <React.Fragment>
-      <div className="PlayerSelection">
+      <div className="FormInput">
         <Typography>Min. Players:</Typography>
         <StyledBackground>
           <StyledInputBase
