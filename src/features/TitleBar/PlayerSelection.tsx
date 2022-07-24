@@ -9,6 +9,8 @@ import {
   selectMinPlayers,
   setMinPlayers,
   setMaxPlayers,
+  selectBestWith,
+  setBestWith,
 } from "../Collection/slice";
 
 const StyledBackground = styled("div")(({ theme }) => ({
@@ -39,11 +41,13 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 interface StateProps {
   minPlayers: string;
   maxPlayers: string;
+  bestWith: string;
 }
 
 interface DispatchProps {
   setMinPlayers: (players: string) => void;
   setMaxPlayers: (players: string) => void;
+  setBestWith: (players: string) => void;
 }
 
 type Props = StateProps & DispatchProps;
@@ -68,6 +72,14 @@ export const PlayerSelection: React.FC<Props> = (props: Props) => {
             onChange={(e) => props.setMaxPlayers(e.target.value)}
           />
         </StyledBackground>
+        <Typography>Best with:</Typography>
+        <StyledBackground>
+          <StyledInputBase
+            placeholder=""
+            value={props.bestWith}
+            onChange={(e) => props.setBestWith(e.target.value)}
+          />
+        </StyledBackground>
       </div>
     </React.Fragment>
   );
@@ -76,6 +88,7 @@ export const PlayerSelection: React.FC<Props> = (props: Props) => {
 const mapStateToProps = (state: RootState): StateProps => ({
   minPlayers: selectMinPlayers(state),
   maxPlayers: selectMaxPlayers(state),
+  bestWith: selectBestWith(state),
 });
 
 const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
@@ -84,6 +97,9 @@ const mapDispatchToProps = (dispatch: Dispatch): DispatchProps => ({
   },
   setMaxPlayers(players) {
     dispatch(setMaxPlayers(players));
+  },
+  setBestWith(players) {
+    dispatch(setBestWith(players));
   },
 });
 

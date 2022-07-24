@@ -23,6 +23,7 @@ export interface CollectionState {
   filteredCollection: Collection;
   minPlayers: string;
   maxPlayers: string;
+  bestWith: string;
   sortCriterium: SortCriterium;
 }
 
@@ -31,6 +32,7 @@ const initialState: CollectionState = {
   filteredCollection: [],
   minPlayers: "",
   maxPlayers: "",
+  bestWith: "",
   sortCriterium: "name",
 };
 
@@ -40,7 +42,8 @@ const getFilteredCollection = (state: CollectionState): Array<Game> => {
   const filteredCollection = state.collection.filter(
     (game) =>
       (isNaN(minPlayers) || game.minPlayers <= minPlayers) &&
-      (isNaN(maxPlayers) || game.maxPlayers >= maxPlayers)
+      (isNaN(maxPlayers) || game.maxPlayers >= maxPlayers) &&
+      (state.bestWith === "" || game.bestWith === state.bestWith)
   );
   switch (state.sortCriterium) {
     case "name":
@@ -68,6 +71,10 @@ const slice = createSlice({
       state.maxPlayers = action.payload;
       state.filteredCollection = getFilteredCollection(state);
     },
+    setBestWith: (state, action: PayloadAction<string>): void => {
+      state.bestWith = action.payload;
+      state.filteredCollection = getFilteredCollection(state);
+    },
     setSortCriterium: (state, action: PayloadAction<SortCriterium>): void => {
       state.sortCriterium = action.payload;
       state.filteredCollection = getFilteredCollection(state);
@@ -75,13 +82,20 @@ const slice = createSlice({
   },
 });
 
-export const { setSortCriterium, setMinPlayers, setMaxPlayers, setCollection } =
-  slice.actions;
+export const {
+  setSortCriterium,
+  setMinPlayers,
+  setMaxPlayers,
+  setCollection,
+  setBestWith,
+} = slice.actions;
 
 export const selectMinPlayers = (state: RootState): string =>
   state.collection.minPlayers;
 export const selectMaxPlayers = (state: RootState): string =>
   state.collection.maxPlayers;
+export const selectBestWith = (state: RootState): string =>
+  state.collection.bestWith;
 export const selectCollection = (state: RootState): Collection =>
   state.collection.collection;
 export const selectFilteredCollection = (state: RootState): Collection =>
