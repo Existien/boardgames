@@ -18,11 +18,13 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
       <div className="grid-container">
         <div style={{ gridArea: "name" }}>
           <Typography variant="h5" textAlign="center">
-            <a href={`https://boardgamegeek.com/boardgame/${props.objectId}`}>{props.name}</a>
+            <a href={`https://boardgamegeek.com/boardgame/${props.objectId}`}>
+              {props.name}
+            </a>
           </Typography>
         </div>
         <div style={{ gridArea: "image" }}>
-          <img alt="" src={props.image} />
+          <img loading="lazy" alt="" src={props.image} />
         </div>
         <div style={{ gridArea: "players" }}>
           <Typography>{players}</Typography>

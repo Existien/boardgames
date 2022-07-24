@@ -1,13 +1,8 @@
 import { Action, createAction } from "@reduxjs/toolkit";
 import { call, put, takeEvery } from "redux-saga/effects";
 import { getBoardgameUrl, getCollectionUrl } from "../api";
-import {
-  Collection,
-  Game,
-  setCollection,
-  setError,
-  setViewState,
-} from "../features/CollectionView/slice";
+import { Collection, Game, setCollection } from "../features/Collection/slice";
+import { setError, setStatus } from "../features/View/slice";
 import { limit } from "../plots";
 
 export const fetchCollection = createAction<{ user: string }>(
@@ -18,19 +13,19 @@ function* fetchCollectionHandler(action: Action) {
   if (!fetchCollection.match(action)) return;
   try {
     yield put(setError(null));
-    yield put(setViewState("loading"));
+    yield put(setStatus("loading"));
 
     let collection: Collection = yield call(getCollection, action.payload.user);
 
     collection = yield call(addPolls, collection, limit);
     yield put(setCollection(collection));
-    yield put(setViewState("ready"));
+    yield put(setStatus("ready"));
   } catch (err) {
     console.log(err);
     yield put(
       setError(`Loading collection from user ${action.payload.user} failed`)
     );
-    yield put(setViewState("idle"));
+    yield put(setStatus("idle"));
   }
 }
 

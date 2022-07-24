@@ -4,13 +4,15 @@ import {
   getDefaultMiddleware,
 } from "@reduxjs/toolkit";
 import titleBarReducer from "./features/TitleBar/slice";
-import collectionViewReducer from "./features/CollectionView/slice";
+import collectionReducer from "./features/Collection/slice";
+import viewReducer from "./features/View/slice";
 import createSagaMiddleware from "@redux-saga/core";
 import rootSaga from "./sagas/rootSaga";
 
 const reducer = combineReducers({
   titleBar: titleBarReducer,
-  collectionView: collectionViewReducer,
+  collection: collectionReducer,
+  view: viewReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();

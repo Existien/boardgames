@@ -13,7 +13,14 @@
   row-gap: calc(var(--collection-column-gap) * 4);
 }
 
-.CollectionInfo {
+.PlayerSelection {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.StatusInfo {
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,13 +1,25 @@
 import React from "react";
 import { Toolbar, AppBar } from "@mui/material";
 import UserInput from "./UserInput";
+import PlayerSelection from "./PlayerSelection";
 
 export const TitleBar: React.FC = () => {
   return (
     <React.Fragment>
       <AppBar position="sticky">
         <Toolbar>
-          <UserInput />
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              alignItems: "center",
+            }}
+          >
+            <UserInput />
+            <PlayerSelection />
+          </div>
         </Toolbar>
       </AppBar>
     </React.Fragment>
