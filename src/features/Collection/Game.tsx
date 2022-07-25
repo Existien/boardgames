@@ -1,10 +1,14 @@
-import { Paper, Typography } from "@mui/material";
-import React from "react";
+import { CircularProgress, Paper, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import { Game as Props } from "./slice";
 import { assignColors, spectral } from "../../plots";
 import { PieChart } from "./PieChart";
 
-export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
+const timeout = async (ms: number) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
+export const Game: React.FC<Props> = (props: Props) => {
   const players =
     "Players: " +
     (props.minPlayers === props.maxPlayers
@@ -12,6 +16,48 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
       : props.minPlayers + " - " + props.maxPlayers);
 
   const colorMap = assignColors(Object.keys(props.recommended || {}), spectral);
+
+  const [recChart, setRecChart] = useState<React.ReactNode>(
+    <CircularProgress />
+  );
+  const [notRecChart, setNotRecChart] = useState<React.ReactNode>(
+    <CircularProgress />
+  );
+
+  useEffect(() => {
+    const createCharts = async () => {
+      await timeout(100);
+      let lazyCharts = [recChart, notRecChart];
+      if (props.recommended) {
+        lazyCharts[0] = (
+          <PieChart
+            data={props.recommended}
+            title="Recommended"
+            legendPosition="left"
+            colorMap={colorMap}
+            dataLimit={5}
+          />
+        );
+      }
+      if (props.notRecommended) {
+        lazyCharts[1] = (
+          <PieChart
+            data={props.notRecommended}
+            title="Not Recommended"
+            legendPosition="right"
+            colorMap={colorMap}
+            dataLimit={5}
+          />
+        );
+      }
+      return lazyCharts;
+    };
+
+    createCharts().then((charts) => {
+      setRecChart(charts[0]);
+      setNotRecChart(charts[1]);
+    });
+  }, []);
 
   return (
     <Paper className="Game">
@@ -32,17 +78,7 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
         <div style={{ gridArea: "best" }}>
           <Typography>{"Best with: " + props.bestWith}</Typography>
         </div>
-        <div style={{ gridArea: "recommended" }}>
-          {props.recommended && (
-            <PieChart
-              data={props.recommended}
-              title="Recommended"
-              legendPosition="left"
-              colorMap={colorMap}
-              dataLimit={5}
-            />
-          )}
-        </div>
+        <div style={{ gridArea: "recommended" }}>{recChart}</div>
         <div style={{ gridArea: "rank" }}>
           <Typography>{"Rank: " + props.bggRank}</Typography>
         </div>
@@ -51,17 +87,7 @@ export const Game: React.FC<Partial<Props>> = (props: Partial<Props>) => {
         </div>
         <div style={{ gridArea: "notRecommended" }}>
           {props.notRecommended && (
-            <div style={{ gridArea: "notRecommended" }}>
-              {props.notRecommended && (
-                <PieChart
-                  data={props.notRecommended}
-                  title="Not Recommended"
-                  legendPosition="right"
-                  colorMap={colorMap}
-                  dataLimit={5}
-                />
-              )}
-            </div>
+            <div style={{ gridArea: "notRecommended" }}>{notRecChart}</div>
           )}
         </div>
       </div>
