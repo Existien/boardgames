@@ -65,15 +65,21 @@ function* addPolls(collection: Collection, entryLimit: number) {
     }
 
     const parsedPoll = parsePoll(poll);
-    const enrichedGame: Game = {
-      ...game,
-      bestWith: Object.entries(parsedPoll["Best"]).sort(
-        (a, b) => Number(b[1]) - Number(a[1])
-      )[0][0],
-      recommended: sumPolls(parsedPoll["Recommended"], parsedPoll["Best"]),
-      notRecommended: parsedPoll["Not Recommended"],
-    };
-    enrichedCollection.push(enrichedGame);
+    if (
+      parsedPoll["Recommended"] !== undefined
+      && parsedPoll["Best"] !== undefined
+      && parsedPoll["Not Recommended"] !== undefined
+    ) {
+      const enrichedGame: Game = {
+        ...game,
+        bestWith: Object.entries(parsedPoll["Best"]).sort(
+          (a, b) => Number(b[1]) - Number(a[1])
+        )[0][0],
+        recommended: sumPolls(parsedPoll["Recommended"], parsedPoll["Best"]),
+        notRecommended: parsedPoll["Not Recommended"],
+      };
+      enrichedCollection.push(enrichedGame);
+    }
   }
   return enrichedCollection;
 }
@@ -164,12 +170,12 @@ const elementToGame = (element: Element): Game => {
 
 const getObjectId = (element: Element): string => {
   const id = element.getAttribute("objectid");
-  return id === null ? "N/A" : id;
+  return id == null ? "N/A" : id;
 };
 
 const getImage = (element: Element): string => {
-  const image = element.getElementsByTagName("thumbnail")[0].textContent;
-  return image === null ? "N/A" : image;
+  const image = element.getElementsByTagName("thumbnail")[0]?.textContent;
+  return image == null ? "N/A" : image;
 };
 
 const getMinPlayers = (element: Element): Number =>
@@ -179,25 +185,25 @@ const getMaxPlayers = (element: Element): Number =>
   Number(element.getElementsByTagName("stats")[0].getAttribute("maxplayers"));
 
 const getName = (element: Element): string => {
-  const name = element.getElementsByTagName("name")[0].textContent;
-  return name === null ? "N/A" : name;
+  const name = element.getElementsByTagName("name")[0]?.textContent;
+  return name == null ? "N/A" : name;
 };
 
 const getUserRating = (element: Element): number =>
   Number(
     element
-      .getElementsByTagName("stats")[0]
-      .getElementsByTagName("rating")[0]
-      .getElementsByTagName("average")[0]
-      .getAttribute("value")
+      ?.getElementsByTagName("stats")[0]
+      ?.getElementsByTagName("rating")[0]
+      ?.getElementsByTagName("average")[0]
+      ?.getAttribute("value")
   );
 
 const getBggRank = (element: Element): number => {
   const ranks = element
-    .getElementsByTagName("stats")[0]
-    .getElementsByTagName("rating")[0]
-    .getElementsByTagName("ranks")[0]
-    .getElementsByTagName("rank");
+    ?.getElementsByTagName("stats")[0]
+    ?.getElementsByTagName("rating")[0]
+    ?.getElementsByTagName("ranks")[0]
+    ?.getElementsByTagName("rank");
 
   for (let i = 0; i < ranks.length; ++i) {
     const rank = ranks.item(i);
