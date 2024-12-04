@@ -1,4 +1,4 @@
-export const limit = 5;
+export const limit = 20;
 
 export const moreland = [
   "#3b4cc0",

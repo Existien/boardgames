@@ -45,40 +45,47 @@ function* getCollection(user: string) {
 }
 
 function* addPolls(collection: Collection, entryLimit: number) {
-  const ids = collection.map((game) => game.objectId);
-  const items: HTMLCollectionOf<Element> = yield fetchItems(
-    getBoardgameUrl(ids)
-  );
   const enrichedCollection = [];
-  for (const game of collection) {
-    const item = getItemWithId(items, game.objectId);
-    if (item === undefined) {
-      enrichedCollection.push(game);
-      console.log(`No details for ${game.name}`);
-      continue;
-    }
+  let i = 0;
+  while (i < collection.length) {
+    const chunkEnd = i+Math.min(entryLimit, collection.length - i);
+    const chunk = collection.slice(i, chunkEnd);
+    i=chunkEnd;
+    const ids = chunk.map((game) => game.objectId);
 
-    const poll = getPoll(item, "suggested_numplayers");
-    if (poll === undefined) {
-      enrichedCollection.push(game);
-      continue;
-    }
+    const items: HTMLCollectionOf<Element> = yield fetchItems(
+      getBoardgameUrl(ids)
+    );
+    for (const game of chunk) {
+      const item = getItemWithId(items, game.objectId);
+      if (item === undefined) {
+        enrichedCollection.push(game);
+        console.log(`No details for ${game.name}`);
+        continue;
+      }
 
-    const parsedPoll = parsePoll(poll);
-    if (
-      parsedPoll["Recommended"] !== undefined
-      && parsedPoll["Best"] !== undefined
-      && parsedPoll["Not Recommended"] !== undefined
-    ) {
-      const enrichedGame: Game = {
-        ...game,
-        bestWith: Object.entries(parsedPoll["Best"]).sort(
-          (a, b) => Number(b[1]) - Number(a[1])
-        )[0][0],
-        recommended: sumPolls(parsedPoll["Recommended"], parsedPoll["Best"]),
-        notRecommended: parsedPoll["Not Recommended"],
-      };
-      enrichedCollection.push(enrichedGame);
+      const poll = getPoll(item, "suggested_numplayers");
+      if (poll === undefined) {
+        enrichedCollection.push(game);
+        continue;
+      }
+
+      const parsedPoll = parsePoll(poll);
+      if (
+        parsedPoll["Recommended"] !== undefined
+        && parsedPoll["Best"] !== undefined
+        && parsedPoll["Not Recommended"] !== undefined
+      ) {
+        const enrichedGame: Game = {
+          ...game,
+          bestWith: Object.entries(parsedPoll["Best"]).sort(
+            (a, b) => Number(b[1]) - Number(a[1])
+          )[0][0],
+          recommended: sumPolls(parsedPoll["Recommended"], parsedPoll["Best"]),
+          notRecommended: parsedPoll["Not Recommended"],
+        };
+        enrichedCollection.push(enrichedGame);
+      }
     }
   }
   return enrichedCollection;
